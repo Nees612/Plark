@@ -5,12 +5,15 @@ using Plark.UnitOfWorkInterfaces;
 using Plark.ViewModels;
 using System.Threading.Tasks;
 using Plark.ErrorCodes;
-
+using System.Collections.Generic;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Plark.Controllers
 {
     [ApiController]
-    [Route("Users")] 
+    [Route("Users")]
     public class UsersController : ControllerBase
     {
         private readonly IUnitOfWork _repository;
@@ -26,64 +29,52 @@ namespace Plark.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetAllUsers()
         {
-            var Users = await _repository.UsersRepoitory.GetAll();
-
-            return Ok(Users);
+            return Ok();
         }
 
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] UserViewModel model)
         {
-            if (model == null || !ModelState.IsValid)
-            {
-                return BadRequest(ControllerErrorCode.InvalidUser.ToString());
-            }
+            var errorCodes = new List<string>();
+            if (model == null || !ModelState.IsValid) return BadRequest(ControllerErrorCode.InvalidUser.ToString());
+            if (model.Password != model.PasswordAgain) errorCodes.Add(ControllerErrorCode.PasswordsDoNotMatch.ToString());
+            if (await _repository.UsersRepoitory.IsUserExistWithPhoneNumber(model.PhoneNumber)) errorCodes.Add(ControllerErrorCode.PhoneNumberAlreadyExists.ToString());
 
-            if (model.Password != model.PasswordAgain)
-            {
-                return BadRequest(ControllerErrorCode.PasswordsDoNotMatch.ToString());
-            }
+            var User = await _repository.UsersRepoitory.GetUserByEmail(model.EmailAddress);
 
-            if (await _repository.UsersRepoitory.CanCreateUser(model))
-            {
-                var User = _userManager.CreateUser(model);
-                var passwordHash = _userManager.CreateHash(model.Password);
-                User.PasswordHash = passwordHash;
-                await _repository.UsersRepoitory.Add(User);
-                await _repository.Complete();
-                var emailToken = _userManager.GenerateEmailVerificationToken(User);
-                _emailManager.SendVerificationEmail(User.EmailAddress, emailToken);
-                return Ok();
-            }
+            if (User != default) errorCodes.Add(ControllerErrorCode.EmailAddressIsAlreadyTaken.ToString());
+            if (errorCodes.Count > 0) return BadRequest(errorCodes);
 
-            return BadRequest(ControllerErrorCode.CouldNotCreateUser.ToString());
+            User = _userManager.CreateUser(model);
+            var passwordHash = _userManager.CreateHash(model.Password);
+            User.PasswordHash = passwordHash;
+            await _repository.UsersRepoitory.Add(User);
+            await _repository.Complete();
+            var emailToken = _userManager.GenerateEmailVerificationToken(User);
+            _emailManager.SendVerificationEmail(User.EmailAddress, emailToken);
+
+            return Ok();
         }
 
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] UserLoginViewModel model)
         {
-            if (model == null || !ModelState.IsValid)
-            {
-                return BadRequest(ControllerErrorCode.InvalidUserNameOrPassword.ToString());
-            }
+            if (model == null || !ModelState.IsValid) return BadRequest(ControllerErrorCode.InvalidUserNameOrPassword.ToString());
 
             var User = await _repository.UsersRepoitory.GetUserByEmail(model.Email);
 
-            if (User == null)
-            {
-                return BadRequest(ControllerErrorCode.InvalidUserNameOrPassword.ToString());
-            }
-
-            if (_userManager.IsValidPasssword(User.PasswordHash, model.Password))
+            if (User == null) return BadRequest(ControllerErrorCode.InvalidUserNameOrPassword.ToString());
+            if (User.IsEmailVerified && _userManager.IsValidPasssword(User.PasswordHash, model.Password))
             {
                 var tokenString = _userManager.GenerateLoginJwtToken(User);
                 var cookieOption = _cookieManager.CreateCookieOption();
                 Response.Cookies.Append("PlarkToken", tokenString, cookieOption);
+
                 return Ok();
             }
-
             return BadRequest(ControllerErrorCode.InvalidUserNameOrPassword.ToString());
         }
 
@@ -121,14 +112,15 @@ namespace Plark.Controllers
             {
                 return BadRequest(ControllerErrorCode.CouldNotDeleteUser.ToString());
             }
-             
+
             var User = await _repository.UsersRepoitory.GetById(Id);
 
             if (User == null)
             {
                 return BadRequest(ControllerErrorCode.CouldNotDeleteUser.ToString());
             }
-
+            var userTickets = await _repository.TicketRepository.Find(t => t.User.Equals(User));
+            _repository.TicketRepository.RemoveRange(userTickets);
             _repository.UsersRepoitory.Remove(User);
             await _repository.Complete();
 

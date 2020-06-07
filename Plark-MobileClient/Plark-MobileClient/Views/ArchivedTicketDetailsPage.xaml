@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Plark_MobileClient.Views.ArchivedTicketDetailsPage">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,10,0">
+            <Label TextColor="Black" FontSize="Title" HorizontalOptions="Center" Text="Ticket Details"></Label>
+            <BoxView Margin="0,0,0,25" HeightRequest="1" WidthRequest="100" BackgroundColor="LightGray"/>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding Id, StringFormat='{}Ticket Id: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding TransactionId, StringFormat='{}Transaction Id: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding Created, StringFormat='{}Created at: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding Expires, StringFormat='{}Expires at: {0}'}"></Label>
+            <Label HorizontalOptions="Center" Margin="0,15,0,0" FontSize="Medium" Text="{Binding Price, StringFormat='{}Charged: {0:F2} Ft'}"></Label>
+            <Label Margin="0,35,0,0 " TextColor="Black" FontSize="Title" HorizontalOptions="Center" Text="User Details"></Label>
+            <BoxView Margin="0,0,0,25" HeightRequest="1" WidthRequest="100" BackgroundColor="LightGray"/>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding FirstName , StringFormat='{}Firstname: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding LastName, StringFormat='{}Lastname: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Medium" Text="{Binding CarNumberPlate, StringFormat='{}Used Car: {0}'}"></Label>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

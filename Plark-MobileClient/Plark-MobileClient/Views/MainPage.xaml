@@ -8,38 +8,27 @@
             x:Class="Plark_MobileClient.Views.MainPage">
 
     <TabbedPage.Children>
-        <NavigationPage Title="Browse">
+        <NavigationPage Title="Login">
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="iOS" Value="tab_feed.png"/>
                 </OnPlatform>
             </NavigationPage.Icon>
             <x:Arguments>
-                <views:ItemsPage />
+                <views:LoginPage />
             </x:Arguments>
         </NavigationPage>
-
-        <NavigationPage Title="Ticket">
+        <NavigationPage Title="SignUp">
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="iOS" Value="tab_feed.png"/>
                 </OnPlatform>
             </NavigationPage.Icon>
             <x:Arguments>
-                <views:TicketPage />
-            </x:Arguments>
-        </NavigationPage>
-
-        <NavigationPage Title="About">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:AboutPage />
+                <views:SignUpPage />
             </x:Arguments>
         </NavigationPage>
     </TabbedPage.Children>
-    
+
+
 </TabbedPage>

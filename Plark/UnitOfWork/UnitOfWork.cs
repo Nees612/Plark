@@ -15,10 +15,13 @@ namespace Plark.UnitOfWorks
             _plarkContext = plarkContext;
             UsersRepoitory = new UsersRepository(_plarkContext);
             TicketRepository = new TicketRepository(_plarkContext);
-
+            CarRepository = new CarRepository(_plarkContext);
+            ArchivedTicketRepository = new ArchivedTicketRepository(_plarkContext);
         }
         public IUsersRepository UsersRepoitory { get; private set; }
         public ITicketRepository TicketRepository { get; private set; }
+        public ICarRepository CarRepository { get; private set; }
+        public IArchivedTicketRepository ArchivedTicketRepository { get; private set; }
 
         public async Task<int> Complete()
         {

@@ -11,21 +11,28 @@ namespace Plark.Repository
     {
         public UsersRepository(PlarkContext plarkContext) : base(plarkContext) { }
 
-        public async Task<bool> CanCreateUser(UserViewModel user)
+        public async Task<bool> IsUserExistWithPhoneNumber(string phoneNumber)
         {
-            var UserWithEmail = await _dbSet.FirstOrDefaultAsync(u => u.EmailAddress.Equals(user.EmailAddress));
+            var UserWithPhoneNumber = await _dbSet.FirstOrDefaultAsync(u => u.PhoneNumber.Equals(phoneNumber));
 
-            if (UserWithEmail == default)
+            if (UserWithPhoneNumber == default)
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
             var User = await _dbSet.FirstOrDefaultAsync(u => u.EmailAddress.Equals(email));
+
+            return User;
+        }
+
+        public async Task<User> GetUserByIdWithCars(long id)
+        {
+            var User = await _dbSet.Include(u => u.Cars).FirstOrDefaultAsync(u => u.Id.Equals(id));
 
             return User;
         }

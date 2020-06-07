@@ -6,9 +6,32 @@
              mc:Ignorable="d"
              x:Class="Plark_MobileClient.Views.TicketPage">
     <ContentPage.Content>
-        <StackLayout BindingContext="{Binding Ticket}" >
-            <Label Text="{Binding ByteString}"></Label>
-            <Button HorizontalOptions="Center" VerticalOptions="Center" Text="Click Me!" Clicked="GetTicket_Clicked"></Button>
+        <StackLayout Margin="10,0,10,0" x:Name="Container" HorizontalOptions="Center" VerticalOptions="Center">
+            <Label x:Name="Timer" TextColor="{Binding Color}" HorizontalOptions="Center" FontSize="Title" Text="{Binding ParkingTime, StringFormat='{}{0:hh\\:mm\\:ss}'}"></Label>
+            <Image HeightRequest="120" WidthRequest="120" IsVisible="{Binding ImageSource}" Source="{Binding ImageSource}">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ImageTap}" />
+                </Image.GestureRecognizers>
+            </Image>
+            <Label HorizontalOptions="Center" FontSize="Subtitle" Text="{Binding Created , StringFormat='{}Created at: {0}'}"></Label>
+            <Label HorizontalOptions="Center" FontSize="Subtitle" Text="{Binding Closed, StringFormat='{}Closed at: {0}'}"></Label>
+            <Label TextColor="Red" IsVisible="{Binding Price}" HorizontalOptions="Center" FontSize="Title" Text="{Binding Price}"></Label>
+            <Button x:Name="getTicketButton" Text="Get Ticket" Clicked="GetTicket_Clicked" ></Button>
+            <!--<Button x:Name="closeTicketButton" Text="Close Ticket" Clicked="CloseTicket_Clicked" ></Button>-->
+            <Button x:Name="payTicketButton" Text="pay For Ticket" Clicked="Pay_Clicked" ></Button>
+            <Label FontSize="Title" Text="Previous Tickets:"></Label>
+            <ListView ItemsSource="{Binding PreviousTickets, Mode=TwoWay}"
+                      SelectedItem="{Binding SelectedTicket, Mode=TwoWay}"
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding Refresh}"
+                      IsRefreshing="{Binding IsRefreshing}" RowHeight="75"
+                      HeightRequest="300"
+                      ItemTapped="SelectedArhivedTicket_Tapped" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell TextColor="Gray" Text="{Binding Id , StringFormat='{}Ticket Id: {0}'}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

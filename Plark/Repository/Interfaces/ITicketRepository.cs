@@ -9,6 +9,7 @@ namespace Plark.Repository.Interfaces
 {
     public interface ITicketRepository : IRepository<Ticket>
     {
+        Task<Ticket> GetTicketByUser(User user);
 
     }
 }

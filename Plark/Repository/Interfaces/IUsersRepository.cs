@@ -9,7 +9,8 @@ namespace Plark.RepositoryInterfaces
 {
     public interface IUsersRepository : IRepository<User>
     {
-        Task<bool> CanCreateUser(UserViewModel model);
+        Task<bool> IsUserExistWithPhoneNumber(string phoneNumber);
         Task<User> GetUserByEmail(string email);
+        Task<User> GetUserByIdWithCars(long id);
     }
 }

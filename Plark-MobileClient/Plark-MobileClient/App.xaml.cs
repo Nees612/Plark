@@ -14,8 +14,9 @@ namespace Plark_MobileClient
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
-            DependencyService.Register<HttpClient>();
+            DependencyService.Register<TicketService>();
+            DependencyService.Register<UsersService>();
+            DependencyService.Register<HeadersService>();
             MainPage = new MainPage();
         }
 

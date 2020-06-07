@@ -37,6 +37,7 @@ namespace Plark
             services.AddScoped<IEmailManager, EmailManager>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<ICookieManager, CookieManager>();
+            services.AddScoped<ITicketManager, TicketManager>();
 
             services.AddControllers();
             services.AddMvcCore(opt =>
@@ -47,8 +48,8 @@ namespace Plark
             services.AddAuthentication()
                 .AddJwtBearer(options =>
                 {
-                    options.Audience = "http://localhost:4200/";
-                    options.ClaimsIssuer = "http://localhost:4200/";
+                    options.Audience = "plarkMobile";
+                    options.ClaimsIssuer = "https://*:5001";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
@@ -70,17 +71,29 @@ namespace Plark
                 app.UseDeveloperExceptionPage();
             }
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+
+                await next();
+            });
+
+            app.UseCors(options => options.SetIsOriginAllowed(x => _ = true)
+                .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
+            app.UseCors("AllowAll");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseMvc(opt =>
             {
                 opt.MapRoute(
                     name: "default",
-                    template: "{controller}/{action}/{id}"
+                    template: "{controller}/{action}/{userId}/{id}"
                     );
             });
         }

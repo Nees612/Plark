@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Xamarin.Forms;
+using Plark_MobileClient.Droid.Service;
 
 namespace Plark_MobileClient.Droid
 {
@@ -16,6 +18,7 @@ namespace Plark_MobileClient.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
+            DependencyService.Register<HTTPClientHandlerCreationService_Android>();
 
             base.OnCreate(savedInstanceState);
 

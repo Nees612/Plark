@@ -11,6 +11,8 @@ namespace Plark.UnitOfWorkInterfaces
     {
         public ITicketRepository TicketRepository { get; }
         public IUsersRepository UsersRepoitory { get; }
+        public ICarRepository CarRepository { get; }
+        public IArchivedTicketRepository ArchivedTicketRepository { get; }
         Task<int> Complete();
     }
 }

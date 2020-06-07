@@ -10,7 +10,7 @@ namespace Plark.Managers
 {
     public class EmailManager : IEmailManager
     {
-        private static readonly string VERIFICATION_URL = "https://localhost:5001/Users/Verify";
+        private static readonly string VERIFICATION_URL = "https://192.168.43.56:5001/Users/Verify";
         private static readonly string SOURCE_EMAIL = "plarkproject@gmail.com";
         public bool IsValidEmail(string email)
         {
@@ -31,10 +31,10 @@ namespace Plark.Managers
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
 
             mail.From = new MailAddress(SOURCE_EMAIL);
+            mail.IsBodyHtml = true;
             mail.To.Add(email);
             mail.Subject = "Plark Email Verification";
-            mail.Body = "<a href=" + VERIFICATION_URL + "/" + emailToken + ">click here to verify</a> fgdfgdfgdfgdfgdfgdfgfdg";
-
+            mail.Body = "<h3>Plark Email Verification</h3><br>Click <a href=" + VERIFICATION_URL + "/" + emailToken + ">here</a> to verify your email address.";
             SmtpServer.Port = 587;
             SmtpServer.Credentials = new System.Net.NetworkCredential(SOURCE_EMAIL, "Dorisz0802");
             SmtpServer.EnableSsl = true;

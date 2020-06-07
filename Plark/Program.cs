@@ -20,8 +20,9 @@ namespace Plark
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("https://192.168.100.12:5001");
+                    webBuilder.UseUrls("https://*:5001");
                 });
     }
 }

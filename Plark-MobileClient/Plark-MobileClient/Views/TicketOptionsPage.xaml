@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Plark_MobileClient.Views.TicketOptionsPage">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="10,5,10,0">
+            <Label FontSize="Title" Text="Select Interval:"></Label>
+            <ListView HeightRequest="250" ItemsSource="{Binding TimeIntervals}" SelectedItem="{Binding SelectedInterval}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell TextColor="Black" Text="{Binding Interval, StringFormat='{}{0:hh\\:mm\\:ss}'}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Label FontSize="Title" Text="Select Car:"></Label>
+            <ListView HeightRequest="250" ItemsSource="{Binding Cars}" SelectedItem="{Binding SelectedCar}" RowHeight="70" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell TextColor="Black" Text="{Binding NickName}" DetailColor="Gray" Detail="{Binding NumberPlate}"></TextCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Receive Ticket" Clicked="ReceiveTicket_Clicked"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

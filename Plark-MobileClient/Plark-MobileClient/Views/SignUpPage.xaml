@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Plark_MobileClient.Views.SignUpPage">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="Center"  VerticalOptions="Center">
+            <Label Text="First name"></Label>
+            <Entry Text="{Binding FirstName}"></Entry>
+            <Label Text="Last name"></Label>
+            <Entry Text="{Binding LastName}" ></Entry>
+            <Label Text="Email address"></Label>
+            <Entry Text="{Binding Email}" Placeholder="example@example.com" ></Entry>
+            <Label Text="Phone number"></Label>
+            <Entry Text="{Binding PhoneNumber}" Placeholder="06709460284" ></Entry>
+            <Label Text="Password"></Label>
+            <Entry Text="{Binding Password}" IsPassword="True" ></Entry>
+            <Label Text="Password again"></Label>
+            <Entry Text="{Binding PasswordAgain}" IsPassword="True" ></Entry>
+            <Button Text="SignUp" Clicked="SignUp_Clicked"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

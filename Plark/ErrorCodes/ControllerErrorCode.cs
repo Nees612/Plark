@@ -15,6 +15,12 @@ namespace Plark.ErrorCodes
         InvalidUserNameOrPassword,
         TokenIsExpeired,
         InvalidToken,
-        CouldNotDeleteUser
+        CouldNotDeleteUser,
+        PhoneNumberAlreadyExists,
+        EmailAddressIsAlreadyTaken,
+        CouldNotFindItem,
+        NumberPlateIsAlreadyExists,
+        TicketIsNotClosed,
+        CouldNotDeleteTicket
     }
 }

@@ -50,8 +50,8 @@ namespace Plark.Managers
             };
 
             var JWToken = new JwtSecurityToken(
-             issuer: "http://localhost:4200/",
-             audience: "http://localhost:4200/",
+             issuer: "https://*:5001",
+             audience: "plarkMobile",
              claims: claims,
              notBefore: new DateTimeOffset(DateTime.Now).DateTime,
              expires: new DateTimeOffset(DateTime.Now.AddMinutes(expireTime.Value)).DateTime,
@@ -62,7 +62,7 @@ namespace Plark.Managers
             return token;
         }
 
-        public string GenerateEmailVerificationToken(User user, int? expireTime = 1400)
+        public string GenerateEmailVerificationToken(User user, int? expireTime = 20)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -73,8 +73,8 @@ namespace Plark.Managers
             };
 
             var JWToken = new JwtSecurityToken(
-             issuer: "http://localhost:4200/",
-             audience: "http://localhost:4200/",
+             issuer: "https://*:5001",
+             audience: "plarkMobile",
              claims: claims,
              notBefore: new DateTimeOffset(DateTime.Now).DateTime,
              expires: new DateTimeOffset(DateTime.Now.AddMinutes(expireTime.Value)).DateTime,
@@ -100,9 +100,9 @@ namespace Plark.Managers
 
             return (tokenS.ValidTo > DateTime.Now);
         }
-        public long GetUserIdFromToken(string emailToken)
+        public long GetUserIdFromToken(string token)
         {
-            var tokenS = ConvertToken(emailToken);
+            var tokenS = ConvertToken(token);
 
             return long.Parse(tokenS.Claims.First(c => c.Type.Equals("UserId")).Value);
         }

@@ -9,6 +9,8 @@ namespace Plark.Context
 
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<ArchivedTicket> ArchivedTickets { get; set; }
+        public DbSet<Car> Cars { get; set; }
 
     }
 }

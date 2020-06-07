@@ -12,5 +12,11 @@ namespace Plark.Repository
     public class TicketRepository : Repository<Ticket>, ITicketRepository
     {
         public TicketRepository(PlarkContext context) : base(context) { }
+
+        public Task<Ticket> GetTicketByUser(User user)
+        {
+            var ticket = _dbSet.FirstOrDefault(t => t.User.Equals(user));
+            return Task.FromResult(ticket);
+        }
     }
 }
