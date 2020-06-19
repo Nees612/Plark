@@ -5,13 +5,18 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             mc:Ignorable="d"
             xmlns:views="clr-namespace:Plark_MobileClient.Views"
+            xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+            android:TabbedPage.ToolbarPlacement="Bottom"
+            android:TabbedPage.BarItemColor="Gray"
+            android:TabbedPage.BarSelectedItemColor="#0095EA"
             x:Class="Plark_MobileClient.Views.MainPage">
 
     <TabbedPage.Children>
-        <NavigationPage Title="Login">
+        <NavigationPage Title="Login" >
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="iOS" Value="tab_feed.png"/>
+                    <On Platform="Android" Value="ic_power_settings_new_black_18dp.xml"></On>
                 </OnPlatform>
             </NavigationPage.Icon>
             <x:Arguments>
@@ -22,6 +27,7 @@
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="iOS" Value="tab_feed.png"/>
+                    <On Platform="Android" Value="ic_person_pin_black_18dp.xml"></On>
                 </OnPlatform>
             </NavigationPage.Icon>
             <x:Arguments>

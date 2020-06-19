@@ -5,12 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="Plark_MobileClient.Views.ProfilePage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Logout" Clicked="Logout_Clicked" Order="Secondary" Priority="0" Icon="IconAddNew" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
         <StackLayout VerticalOptions="Start"  HorizontalOptions="Center" Margin="10,0,10,0">
-            <Label Text="{Binding Name, StringFormat='{}Welcome {0} !'}" FontSize="Title"></Label>
-            <BoxView Margin="0,0,0,25" HeightRequest="1" WidthRequest="100" BackgroundColor="LightGray" />
-            <Label Text="My Cars:" FontSize="Title"></Label>
-            <ListView ItemsSource="{Binding Cars, Mode=TwoWay}" HeightRequest="450"
+            <Label HorizontalOptions="Center" Text="{Binding Name, StringFormat='{}Welcome {0} !'}" FontSize="Title"></Label>
+            <Label Margin="0,25,0,0" HorizontalOptions="Center" Text="My Cars" FontSize="Title"></Label>
+            <BoxView HeightRequest="1" WidthRequest="100" BackgroundColor="LightGray" />
+            <ListView ItemsSource="{Binding Cars, Mode=TwoWay}" VerticalOptions="CenterAndExpand"
                       SelectedItem="{Binding SelectedCar}"
                       ItemTapped="CarList_CarTapped"
                       HasUnevenRows="True"
@@ -25,7 +30,6 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="Add Car" Clicked="AddCar_Clicked"></Button>
-            <Button Text="Logout" Clicked="Logout_Clicked"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

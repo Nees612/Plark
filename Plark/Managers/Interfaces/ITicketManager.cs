@@ -11,7 +11,7 @@ namespace Plark.Managers.Interfaces
     public interface ITicketManager
     {
         Task<byte[]> BitmapToBytes(Bitmap img);
-        Task<Bitmap> CreateQrcodeFromTicket(ITicket ticket);
+        Task<Bitmap> CreateQrcode(string data);
         Task<string> GenerateTicketJwtToken(User user, Car car, double expireTime);
         Task<string> GetCreatedFromToken(string token);
         Task<string> GetExpireFromToken(string token);

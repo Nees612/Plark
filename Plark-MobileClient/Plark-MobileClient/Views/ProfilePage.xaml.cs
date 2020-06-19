@@ -1,4 +1,5 @@
-﻿using Plark_MobileClient.Models;
+﻿using Java.Lang;
+using Plark_MobileClient.Models;
 using Plark_MobileClient.ViewModels;
 using System;
 using System.Text.RegularExpressions;
@@ -56,11 +57,11 @@ namespace Plark_MobileClient.Views
 
         private async void CarList_CarTapped(object sender, ItemTappedEventArgs e)
         {
-            string action = await DisplayActionSheet(String.Format("Car : {0}", _viewModel.SelectedCar.NumberPlate), "Cancel", null, "Edit", "Delete");
+            string action = await DisplayActionSheet($"Car : {_viewModel.SelectedCar.NumberPlate}", "Cancel", null, "Edit", "Delete");
 
             if (action == "Delete")
             {
-                var answer = await DisplayAlert(String.Format("Deleting : {0}", _viewModel.SelectedCar.NickName), "Are you sure ?", "Yes", "No");
+                var answer = await DisplayAlert($"Deleting : {_viewModel.SelectedCar.NickName}", "Are you sure ?", "Yes", "No");
                 if (answer)
                 {
                     var result = await _viewModel.DeleteCar();
@@ -81,7 +82,7 @@ namespace Plark_MobileClient.Views
                 if (editAction == "Nickname")
                 {
                     string nickname = await DisplayPromptAsync("NickName", "Enter Nickname.");
-                    if (nickname != string.Empty)
+                    if (nickname != null || nickname != string.Empty)
                     {
                         var result = await _viewModel.UpdateSelectedCar(new Car
                         {
@@ -89,13 +90,13 @@ namespace Plark_MobileClient.Views
                             NickName = nickname,
                             NumberPlate = _viewModel.SelectedCar.NumberPlate
                         });
-                        if (!result) await DisplayAlert(String.Format("Editing Car: {0}", _viewModel.SelectedCar.NickName), "Failed to rename your car.", "Ok");
+                        if (!result) await DisplayAlert($"Editing Car: {_viewModel.SelectedCar.NickName}", "Failed to rename your car.", "Ok");
                     }
                 }
                 else if (editAction == "Numberplate")
                 {
                     string numberplate = await DisplayPromptAsync("Numberplate", "Enter Numberplate.");
-                    if (numberplate != string.Empty)
+                    if (numberplate != null || numberplate != string.Empty)
                     {
                         var result = await _viewModel.UpdateSelectedCar(new Car
                         {
@@ -103,11 +104,16 @@ namespace Plark_MobileClient.Views
                             NickName = _viewModel.SelectedCar.NickName,
                             NumberPlate = numberplate.ToUpper()
                         });
-                        if (!result) await DisplayAlert(String.Format("Editing Car: {0}", _viewModel.SelectedCar.NickName), "Failed to change numberplate.", "Ok");
+                        if (!result) await DisplayAlert($"Editing Car: {_viewModel.SelectedCar.NickName}", "Failed to change numberplate.", "Ok");
                     }
                 }
             }
 
+
+        }
+
+        private void ToolbarItem_Clicked(object sender, EventArgs e)
+        {
 
         }
     }

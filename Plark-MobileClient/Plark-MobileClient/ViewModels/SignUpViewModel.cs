@@ -6,11 +6,11 @@ namespace Plark_MobileClient.ViewModels
 {
     public class SignUpViewModel : BaseViewModel
     {
-        private string firstName;
-        private string lastName;
-        private string email;
-        private string phoneNumber;
-        private string password;
+        private string firstName = string.Empty;
+        private string lastName = string.Empty;
+        private string email = string.Empty;
+        private string phoneNumber = string.Empty;
+        private string password = string.Empty;
         private string passwordAgain;
 
         public string FirstName { get => firstName; set { SetProperty(ref firstName, value); } }

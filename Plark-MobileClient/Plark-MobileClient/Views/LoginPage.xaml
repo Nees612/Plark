@@ -6,13 +6,11 @@
              mc:Ignorable="d"
              x:Class="Plark_MobileClient.Views.LoginPage">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-            <Label Text="Email" ></Label>
-            <Entry Text="{Binding Email}" Placeholder="example@example.com" ></Entry>
-            <Label Text="Password" VerticalOptions="Center"></Label>
-            <Entry Text="{Binding Password}" IsPassword="True" Placeholder="Password" ></Entry>
-            <Label Text="Remember Me"></Label>
-            <Switch IsToggled="{Binding RememberMe}"></Switch>
+        <StackLayout WidthRequest="250" VerticalOptions="Center" HorizontalOptions="Center">
+            <Entry  Text="{Binding Email}" x:Name="Email" Placeholder="example@example.com" PlaceholderColor="Gray"></Entry>
+            <Entry Text="{Binding Password}" x:Name="Password" IsPassword="True" Placeholder="Password" PlaceholderColor="Gray" ></Entry>
+            <Label HorizontalOptions="Center" Text="Remember Me"></Label>
+            <Switch HorizontalOptions="Center" IsToggled="{Binding RememberMe}"></Switch>
             <Button Text="SignIn" Clicked="Login_Clicked"></Button>
         </StackLayout>
     </ContentPage.Content>

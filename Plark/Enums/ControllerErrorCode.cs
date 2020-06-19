@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Plark.ErrorCodes
+namespace Plark.Enums
 {
     public enum ControllerErrorCode
     {
@@ -21,6 +21,8 @@ namespace Plark.ErrorCodes
         CouldNotFindItem,
         NumberPlateIsAlreadyExists,
         TicketIsNotClosed,
-        CouldNotDeleteTicket
+        CouldNotDeleteTicket,
+        CouldNotActivateTicket,
+        TicketIsNotActivated
     }
 }

@@ -10,13 +10,14 @@ namespace Plark_MobileClient.Interface
 {
     public interface ITicketService
     {
-        Task<ImageSource> GetTicket(TicketOption ticketOption);
+        Task<ImageSource> GetTicketIdQr(TicketOption ticketOption);
         Task<string> CloseTicket();
         Task<string> GetCreationTime();
         Task<string> GetClosedTime();
         Task<ImageSource> HasActiveTicket();
         Task<bool> ArchiveUserTicket();
         Task<bool> DeleteTicket(long ticketId);
+        Task<ImageSource> HasTicketIdQrImage();
         Task<ObservableCollection<ArchivedTicket>> GetPreviousUserTickets();
     }
 }

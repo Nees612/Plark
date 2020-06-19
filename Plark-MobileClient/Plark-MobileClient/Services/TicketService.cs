@@ -41,6 +41,20 @@ namespace Plark_MobileClient.Services
             return default;
         }
 
+        public async Task<ImageSource> HasTicketIdQrImage()
+        {
+            HttpClient.DefaultRequestHeaders.Authorization = await HeadersService.GetAuthenticationHeader(TokenString);
+            var responseMessage = await HttpClient.GetAsync(GET_TICKET_URL + "TicketIdQrImage");
+            byte[] result;
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                result = await responseMessage.Content.ReadAsByteArrayAsync();
+                return ImageSource.FromStream(() => new MemoryStream(result));
+            }
+            return default;
+        }
+
         public async Task<ImageSource> HasActiveTicket()
         {
             HttpClient.DefaultRequestHeaders.Authorization = await HeadersService.GetAuthenticationHeader(TokenString);
@@ -54,7 +68,7 @@ namespace Plark_MobileClient.Services
             }
             return default;
         }
-        public async Task<ImageSource> GetTicket(TicketOption ticketOption)
+        public async Task<ImageSource> GetTicketIdQr(TicketOption ticketOption)
         {
             HttpClient.DefaultRequestHeaders.Authorization = await HeadersService.GetAuthenticationHeader(TokenString);
             var responseMessage = await HttpClient.GetAsync(GET_TICKET_URL + String.Format("{0}/{1}", ticketOption.Car.Id, ticketOption.TimeInterval.Interval.TotalHours));

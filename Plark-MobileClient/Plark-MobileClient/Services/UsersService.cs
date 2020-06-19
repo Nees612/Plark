@@ -29,10 +29,14 @@ namespace Plark_MobileClient.Services
             var response = await HttpClient.PostAsync(LOGIN_URL, content);
             if (response.IsSuccessStatusCode)
             {
-                TokenString = response.Headers.FirstOrDefault(h => h.Key.Equals("Set-Cookie")).Value.Where(v => v.Contains(COOKIE_NAME)).FirstOrDefault().Split(';').First().Replace(COOKIE_NAME + "=", string.Empty);
+                TokenString = response.Headers.FirstOrDefault(h => h.Key.Equals("Set-Cookie")).Value
+                    .Where(v => v.Contains(EnvironmentVariables.COOKIE_NAME))
+                    .FirstOrDefault().Split(';')
+                    .First()
+                    .Replace(EnvironmentVariables.COOKIE_NAME + "=", string.Empty);
                 HttpClient.DefaultRequestHeaders.Authorization = await HeadersService.GetAuthenticationHeader(TokenString);
                 SetCurrentUser(TokenString);
-                if (rememberMe) Preferences.Set(COOKIE_NAME, TokenString);
+                if (rememberMe) Preferences.Set(EnvironmentVariables.COOKIE_NAME, TokenString);
                 MessagingCenter.Send(this, "UserLoggedIn");
                 return true;
             }
@@ -47,7 +51,7 @@ namespace Plark_MobileClient.Services
 
         public async Task<bool> IsUserLoggedIn()
         {
-            var tokenString = Preferences.Get(COOKIE_NAME, string.Empty);
+            var tokenString = Preferences.Get(EnvironmentVariables.COOKIE_NAME, string.Empty);
             if (tokenString.Equals(string.Empty))
             {
                 MessagingCenter.Send(this, "UserIsNotLoggedIn");
@@ -150,10 +154,10 @@ namespace Plark_MobileClient.Services
 
         public Task Logout()
         {
-            var tokenString = Preferences.Get(COOKIE_NAME, string.Empty);
+            var tokenString = Preferences.Get(EnvironmentVariables.COOKIE_NAME, string.Empty);
             if (!tokenString.Equals(string.Empty))
             {
-                Preferences.Set(COOKIE_NAME, string.Empty);
+                Preferences.Set(EnvironmentVariables.COOKIE_NAME, string.Empty);
             }
             if (CurrentUser != null) CurrentUser = null;
             MessagingCenter.Send(this, "UserIsNotLoggedIn");

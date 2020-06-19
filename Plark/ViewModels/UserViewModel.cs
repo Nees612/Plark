@@ -15,7 +15,7 @@ namespace Plark.ViewModels
         [DataType(DataType.Text)]
         public string LastName { get; set; }
         [Required]
-        [DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email")]
         public string EmailAddress { get; set; }
         [Required]
         [DataType(DataType.PhoneNumber)]

@@ -10,7 +10,9 @@ namespace Plark.Models
     {
         public long Id { get; set; }
         public User User { get; set; }
+        public Car Car { get; set; }
         public string Token { get; set; }
+        public double ParkingTimeInHours { get; set; }
 
     }
 }

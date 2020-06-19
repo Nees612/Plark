@@ -18,6 +18,8 @@ using Plark.Managers;
 using Plark.Managers.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Plark.Hubs;
+using System.Net;
 
 namespace Plark
 {
@@ -61,6 +63,8 @@ namespace Plark
 
             services.AddDbContextPool<PlarkContext>(
                 opt => opt.UseSqlServer(Configuration.GetConnectionString("PlarkDbConnectionString")));
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,7 +87,7 @@ namespace Plark
 
             app.UseCors("AllowAll");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -95,6 +99,14 @@ namespace Plark
                     name: "default",
                     template: "{controller}/{action}/{userId}/{id}"
                     );
+            });
+
+            app.UseEndpoints(routes =>
+            {
+                routes.MapHub<TicketsHub>("/hubs/tickets", (options) =>
+                {
+                    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+                });
             });
         }
     }

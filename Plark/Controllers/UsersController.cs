@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Plark.Enums;
 using Plark.Managers.Interfaces;
 using Plark.Models;
 using Plark.UnitOfWorkInterfaces;
 using Plark.ViewModels;
-using System.Threading.Tasks;
-using Plark.ErrorCodes;
 using System.Collections.Generic;
-using System.Net;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace Plark.Controllers
 {
@@ -40,12 +39,14 @@ namespace Plark.Controllers
         {
             var errorCodes = new List<string>();
             if (model == null || !ModelState.IsValid) return BadRequest(ControllerErrorCode.InvalidUser.ToString());
+
             if (model.Password != model.PasswordAgain) errorCodes.Add(ControllerErrorCode.PasswordsDoNotMatch.ToString());
+
             if (await _repository.UsersRepoitory.IsUserExistWithPhoneNumber(model.PhoneNumber)) errorCodes.Add(ControllerErrorCode.PhoneNumberAlreadyExists.ToString());
 
             var User = await _repository.UsersRepoitory.GetUserByEmail(model.EmailAddress);
 
-            if (User != default) errorCodes.Add(ControllerErrorCode.EmailAddressIsAlreadyTaken.ToString());
+            if (User != null) errorCodes.Add(ControllerErrorCode.EmailAddressIsAlreadyTaken.ToString());
             if (errorCodes.Count > 0) return BadRequest(errorCodes);
 
             User = _userManager.CreateUser(model);

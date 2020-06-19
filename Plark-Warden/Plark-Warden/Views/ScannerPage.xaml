@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Plark_Warden.Views.ScannerPage">
+    <ContentPage.Content>
+        <StackLayout Margin="10,0,10,0" HorizontalOptions="Center" VerticalOptions="Center">
+            <Label TextColor="Black" FontSize="Title" HorizontalOptions="Center" Text="Ticket Details" IsVisible="{Binding IsTicketQrText}"></Label>
+            <BoxView Margin="0,0,0,25" HeightRequest="1" WidthRequest="100" BackgroundColor="LightGray" IsVisible="{Binding IsTicketQrText}" />
+            <Label Margin="0,0,0,25" HorizontalOptions="Center" Text="{Binding QrText}" FontSize="Medium"></Label>
+            <Button Text="Scan Qr Code" Clicked="ScannerButton_Clicked"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

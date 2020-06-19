@@ -27,9 +27,19 @@ namespace Plark_MobileClient.Views
             });
         }
 
-        private void Login_Clicked(object sender, EventArgs e)
+        private async void Login_Clicked(object sender, EventArgs e)
         {
-            _viewModel.Login();
+            var result = await _viewModel.Login();
+            if (result)
+            {
+                Email.PlaceholderColor = Color.Gray;
+                Password.PlaceholderColor = Color.Gray;
+            }
+            else
+            {
+                Email.PlaceholderColor = Color.Red;
+                Password.PlaceholderColor = Color.Red;
+            }
         }
     }
 }

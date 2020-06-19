@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Plark.Models
 {
@@ -25,6 +23,7 @@ namespace Plark.Models
         [DataType(DataType.Text)]
         [StringLength(60)]
         public string PasswordHash { get; set; }
+        public string ConnectionId { get; set; }
         public List<Car> Cars { get; set; } = new List<Car>();
     }
 }

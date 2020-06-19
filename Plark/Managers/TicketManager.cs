@@ -32,13 +32,13 @@ namespace Plark.Managers
             }
         }
 
-        public Task<Bitmap> CreateQrcodeFromTicket(ITicket ticket)
+        public Task<Bitmap> CreateQrcode(string data)
         {
             QRCodeGenerator codeGenerator = new QRCodeGenerator();
-            var TicketQrData = codeGenerator.CreateQrCode(ticket.Token, QRCodeGenerator.ECCLevel.Q);
-            var TicketQr = new QRCode(TicketQrData);
+            var QrData = codeGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+            var Qr = new QRCode(QrData);
 
-            return Task.FromResult(TicketQr.GetGraphic(20));
+            return Task.FromResult(Qr.GetGraphic(20));
         }
 
         public Task<string> GenerateTicketJwtToken(User user, Car car, double expireTime)
@@ -54,7 +54,7 @@ namespace Plark.Managers
                 new Claim("CarId", car.Id.ToString() ),
                 new Claim("NumberPlate", car.NumberPlate),
                 new Claim("Created", created.ToString()),
-                new Claim("Expires" , expires.ToString()),
+                new Claim("Expires", expires.ToString()),
                 new Claim("Price", (expireTime * 250).ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

@@ -16,7 +16,6 @@ namespace Plark.Managers.Interfaces
         public string GenerateLoginJwtToken(User user, int? expireTime = 1400);
         public string GenerateEmailVerificationToken(User user, int? expireTime = 1400);
         public long GetUserIdFromToken(string header);
-
         public bool IsEmailTokenValid(string emailToken);
     }
 }

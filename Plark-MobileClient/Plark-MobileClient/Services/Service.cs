@@ -10,11 +10,9 @@ namespace Plark_MobileClient.Services
 {
     public class Service
     {
-        protected readonly static Uri BASE_ADDRESS = new Uri("https://192.168.43.56:5001");
-        protected readonly static string COOKIE_NAME = "PlarkToken";
         protected static User CurrentUser;
         protected static string TokenString;
-        protected IHeadersService HeadersService = DependencyService.Get<IHeadersService>();
+        protected IHeadersService HeadersService => DependencyService.Get<IHeadersService>();
         protected HttpClientHandler HttpClientHandler;
         protected CookieContainer CookieContainer;
         protected static HttpClient HttpClient;
@@ -31,9 +29,8 @@ namespace Plark_MobileClient.Services
                     HttpClientHandler = new HttpClientHandler() { CookieContainer = this.CookieContainer };
                     break;
             }
-            HttpClient = new HttpClient(HttpClientHandler) { BaseAddress = BASE_ADDRESS };
+            HttpClient = new HttpClient(HttpClientHandler) { BaseAddress = EnvironmentVariables.BASE_ADDRESS };
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
         }
     }
 }

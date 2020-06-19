@@ -22,7 +22,8 @@ namespace Plark
                 {
                     webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("https://*:5001");
+                    string[] urls = new string[] { "https://*:5001", "http://*:5000" };
+                    webBuilder.UseUrls(urls);
                 });
     }
 }

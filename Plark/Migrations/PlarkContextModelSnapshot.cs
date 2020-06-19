@@ -74,6 +74,12 @@ namespace Plark.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("CarId")
+                        .HasColumnType("bigint");
+
+                    b.Property<double>("ParkingTimeInHours")
+                        .HasColumnType("float");
+
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
@@ -81,6 +87,8 @@ namespace Plark.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarId");
 
                     b.HasIndex("UserId");
 
@@ -93,6 +101,9 @@ namespace Plark.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
@@ -122,6 +133,39 @@ namespace Plark.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Plark.Models.Warden", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WorkPlace")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wardens");
+                });
+
             modelBuilder.Entity("Plark.Models.ArchivedTicket", b =>
                 {
                     b.HasOne("Plark.Models.User", "User")
@@ -138,6 +182,10 @@ namespace Plark.Migrations
 
             modelBuilder.Entity("Plark.Models.Ticket", b =>
                 {
+                    b.HasOne("Plark.Models.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId");
+
                     b.HasOne("Plark.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");

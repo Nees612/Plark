@@ -1,9 +1,12 @@
-﻿using Plark_MobileClient.Interface;
+﻿using Java.IO;
+using Microsoft.AspNetCore.SignalR.Client;
+using Plark_MobileClient.Interface;
 using Plark_MobileClient.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Plark_MobileClient.ViewModels
@@ -11,51 +14,32 @@ namespace Plark_MobileClient.ViewModels
     public class TicketViewModel : BaseViewModel
     {
         private ObservableCollection<ArchivedTicket> _previousTickets = new ObservableCollection<ArchivedTicket>();
-        private ImageSource _imageSource = null;
-        private ImageSource _placeholder = ImageSource.FromUri(new Uri("https://media.ticketmaster.eu/norway/help/footerny/platinumbilletter/images/platinum1.png"));
-        private string _created = null;
-        private string _closed = null;
-        private string _price = null;
-        private int _hourlyFee = 250;
-        private bool _stopped = true;
-        private TimeSpan _parkingTime = new TimeSpan(0, 0, 0);
-        private bool _isRefreshing = false;
-        private Color _color = Color.Gray;
+        private ImageSource _imageSource;
+        private ImageSource _placeholder = "ic_local_parking_black_24dp.xml";
         private ArchivedTicket _selectedTicket;
-        public Color Color { get => _color; set { SetProperty(ref _color, value); } }
-        public bool IsRefreshing
-        {
-            get => _isRefreshing;
-            set
-            {
-                SetProperty(ref _isRefreshing, value);
-            }
-        }
+        private TimeSpan _parkingTime = new TimeSpan(0, 0, 0);
+        private Color _color;
+        private int _hourlyFee = 250;
+        private string _created;
+        private string _closed;
+        private string _price;
+        private bool _stopped = true;
+        private bool _isRefreshing = false;
+        private bool _isActiveTicket = false;
+        private HubConnection _connection;
 
-        public ArchivedTicket SelectedTicket { get => _selectedTicket; set { SetProperty(ref _selectedTicket, value); } }
+        public ObservableCollection<ArchivedTicket> PreviousTickets { get => _previousTickets; set { SetProperty(ref _previousTickets, value); } }
+        public ImageSource ImageSource { get => _imageSource; set { SetProperty(ref _imageSource, value); } }
         public TicketOption TicketOption { get; set; }
+        public ArchivedTicket SelectedTicket { get => _selectedTicket; set { SetProperty(ref _selectedTicket, value); } }
+        public TimeSpan ParkingTime { get => _parkingTime; set { SetProperty(ref _parkingTime, value); } }
+        public Color Color { get => _color; set { SetProperty(ref _color, value); } }
+        public bool IsRefreshing { get => _isRefreshing; set { SetProperty(ref _isRefreshing, value); } }
+        public string Created { get => _created; set { SetProperty(ref _created, value); } }
+        public string Closed { get => _closed; set { SetProperty(ref _closed, value); } }
+        public string Price { get => _price; set { SetProperty(ref _price, value); } }
+        public bool IsActiveTicket { get => _isActiveTicket; set { SetProperty(ref _isActiveTicket, value); } }
         private ITicketService _ticketService => DependencyService.Get<ITicketService>();
-        public ImageSource ImageSource
-        {
-            get => _imageSource;
-            set { SetProperty(ref _imageSource, value); }
-        }
-
-        public string Created
-        {
-            get => _created;
-            set { SetProperty(ref _created, value); }
-        }
-        public string Closed
-        {
-            get => _closed;
-            set { SetProperty(ref _closed, value); }
-        }
-        public ObservableCollection<ArchivedTicket> PreviousTickets
-        {
-            get => _previousTickets;
-            set { SetProperty(ref _previousTickets, value); }
-        }
         public Command Refresh
         {
             get
@@ -64,7 +48,7 @@ namespace Plark_MobileClient.ViewModels
                 {
                     IsRefreshing = true;
 
-                    await SetPageData();
+                    await SetPreviousTickets();
 
                     IsRefreshing = false;
                 });
@@ -81,49 +65,47 @@ namespace Plark_MobileClient.ViewModels
                 });
             }
         }
-        public TimeSpan ParkingTime
+
+        public TicketViewModel()
         {
-            get => _parkingTime;
-            set { SetProperty(ref _parkingTime, value); }
+            ImageSource = _placeholder;
         }
 
-        public string Price
+        private async void OpenHubConnection()
         {
-            get => _price;
-            set { SetProperty(ref _price, value); }
+            _connection = new HubConnectionBuilder().WithUrl(EnvironmentVariables.HubUrl, options =>
+            {
+                options.Headers.Add("Authorization", Preferences.Get(EnvironmentVariables.COOKIE_NAME, string.Empty));
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+            }).Build();
+            _connection.On("ActivatedTicket", async () =>
+            {
+                _imageSource = _placeholder;
+                await HasActiveTicket();
+                if (_connection.SendAsync("DeleteConnectionId").IsCompleted)
+                {
+                    await _connection.StopAsync();
+                };
+            });
+            await _connection.StartAsync();
         }
 
-        public async Task<bool> GetTicket()
+        public async Task<bool> GetTicketIdQr()
         {
             if (TicketOption != null)
             {
-                var result = await _ticketService.GetTicket(TicketOption);
+                var result = await _ticketService.GetTicketIdQr(TicketOption);
                 if (result == default)
                 {
                     return false;
                 }
-                StartTimer();
                 ImageSource = result;
-                Created = await _ticketService.GetCreationTime();
-                Closed = await _ticketService.GetClosedTime();
                 TicketOption = null;
+                OpenHubConnection();
                 return true;
             }
             return false;
         }
-
-        //public async Task<bool> CloseTicket()
-        //{
-        //    var result = await _ticketService.CloseTicket();
-        //    if (result == default)
-        //    {
-        //        return false;
-        //    }
-        //    StopTimer();
-        //    Closed = result;
-        //    CalculatePrice();
-        //    return true;
-        //}
 
         private void StartTimer()
         {
@@ -179,38 +161,50 @@ namespace Plark_MobileClient.ViewModels
 
         public async Task<bool> HasActiveTicket()
         {
-            if (ImageSource == _placeholder)
+            if (!IsActiveTicket)
             {
                 var result = await _ticketService.HasActiveTicket();
 
                 if (result == default)
                 {
+                    IsActiveTicket = false;
                     return false;
                 }
-                ImageSource = result;
+                IsActiveTicket = true;
                 Created = await _ticketService.GetCreationTime();
                 Closed = await _ticketService.GetClosedTime();
+                ImageSource = result;
                 StartTimer();
-                if (Closed != null) CalculatePrice();
+                CalculatePrice();
             }
 
             return true;
         }
 
-        public async Task<bool> SetPageData()
+        public async Task<bool> HasTicketIdQrImage()
+        {
+            if (!IsActiveTicket)
+            {
+                var result = await _ticketService.HasTicketIdQrImage();
+
+                if (result != default)
+                {
+                    ImageSource = result;
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        public async Task SetPreviousTickets()
         {
             var result = await _ticketService.GetPreviousUserTickets();
 
-            if (ImageSource == null)
+            if (result != default)
             {
-                ImageSource = _placeholder;
+                PreviousTickets = result;
             }
-            if (result == default)
-            {
-                return false;
-            }
-            PreviousTickets = result;
-            return true;
         }
 
         public async Task<bool> ArchiveTicket()
@@ -218,19 +212,13 @@ namespace Plark_MobileClient.ViewModels
             var result = await _ticketService.ArchiveUserTicket();
             if (result)
             {
+                await SetPreviousTickets();
+                ImageSource = _placeholder;
+                IsActiveTicket = false;
                 return true;
             }
-            return false;
-        }
 
-        public void ReSetData()
-        {
-            ImageSource = _placeholder;
-            Created = null;
-            Closed = null;
-            Price = null;
-            Color = Color.Gray;
-            ParkingTime = new TimeSpan(0, 0, 0);
+            return false;
         }
     }
 }
